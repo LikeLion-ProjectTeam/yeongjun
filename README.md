@@ -22,8 +22,8 @@ This project is a simple example of an email sending application using Flask. It
 ### 1. Clone the Project
 
 ```bash
-git clone https://github.com/yourusername/flask-email-sender.git
-cd flask-email-sender
+git clone https://github.com/LikeLion-ProjectTeam/yeongjun.git
+cd yeongjun
 ```
 
 ### 2. Set Up a Virtual Environment
