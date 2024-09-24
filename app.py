@@ -1,17 +1,20 @@
+import os
 from flask import Flask, render_template, request
 from flask_mail import Mail, Message
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 
 # Flask-Mail configuration
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 465
-app.config['MAIL_USE_TLS'] = False
-app.config['MAIL_USE_SSL'] = True
-app.config['MAIL_USERNAME'] = 'june121284@gmail.com' # Your email
-app.config['MAIL_PASSWORD'] = 'oxsb lfgm qxdl zbgg' # Your email password
+app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
+app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT'))
+app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS') == 'True'
+app.config['MAIL_USE_SSL'] = os.getenv('MAIL_USE_SSL') == 'True'
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 mail = Mail(app)
-
 
 @app.route('/')
 def index():
@@ -23,13 +26,10 @@ def email_test():
         sender = request.form['email_sender']
         receiver = request.form['email_receiver']
         content = request.form['email_content']
-        receiver = receiver.split(',')
+        receiver = [email.strip() for email in receiver.split(',')]
 
-        for i in range(len(receiver)):
-            receiver[i] = receiver[i].strip()
-
-        print(receiver)
         result = send_email(sender, receiver, content)
+        
         if not result:
             return render_template('index.html', content="Email is sent")
         else:
@@ -38,11 +38,15 @@ def email_test():
         return render_template('index.html')
     
 def send_email(sender, receiver, content):
-    msg = Message('Title', sender = sender, recipients = receiver)
-    msg.body = content
-    mail.send(msg)
-
-    return 'Sent email.'
+    try:
+        msg = Message('Title', sender=sender, recipients=receiver)
+        msg.body = content
+        mail.send(msg)
+        print('Email sent')
+        return True
+    except Exception as e:
+        print(f"Error sending email: {e}")
+        return False
 
 if __name__ == '__main__':
     app.run(debug=True)
