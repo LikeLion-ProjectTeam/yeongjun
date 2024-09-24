@@ -23,27 +23,37 @@ def index():
 @app.route('/email', methods=['GET', 'POST'])
 def email_test():
     if request.method == 'POST':
+        # Get email details
+        subject = request.form['email_subject']
         sender = request.form['email_sender']
         receiver = request.form['email_receiver']
         content = request.form['email_content']
+        # Split multiple email addresses
         receiver = [email.strip() for email in receiver.split(',')]
 
-        result = send_email(sender, receiver, content)
+        result = send_email(subject, sender, receiver, content)
         
-        if not result:
+        if result:
+            # Print "Email is sent" on the webpage if the email is sent successfully
             return render_template('index.html', content="Email is sent")
         else:
+            # Print "Email is not sent" on the webpage if the email is not sent
             return render_template('index.html', content="Email is not sent")
     else:
         return render_template('index.html')
     
-def send_email(sender, receiver, content):
+def send_email(subject, sender, receiver, content):
     try:
-        msg = Message('Title', sender=sender, recipients=receiver)
-        msg.body = content
+        # Get email content
+        msg = Message(subject=subject, sender=sender, recipients=receiver)
+        msg.body = f"From: {sender}\n\n{content}"
+
+        # Send email
         mail.send(msg)
+        
         print('Email sent')
         return True
+    
     except Exception as e:
         print(f"Error sending email: {e}")
         return False

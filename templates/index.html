@@ -7,15 +7,20 @@
     </head>
     <body>
         <div id="message">
-            <div id="subject"><h1>Send Email!</h1></div>
+            <div id="subject"><h1>Welcome to the Email Service</h1></div>
             <form action="/email" method="POST">
+                <p>{{ content }}</p>
                 <p>
-                    <label for="email">Receiver Name:</label><br />
+                    <label for="name">Sender Name:</label><br />
                     <input type="text" name="email_sender" value="" />
                 </p>
                 <p>
-                    <label for="subject">Receiver Email:</label><br />
+                    <label for="email">Receiver Email:</label><br />
                     <input type="text" name="email_receiver" value="" />
+                </p>
+                <p>
+                    <label for="subject">Subject</label><br />
+                    <input type="text" name="email_subject" value="" />
                 </p>
                 <p>
                     <label for="body">Message:</label><br />
